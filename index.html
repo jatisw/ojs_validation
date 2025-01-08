@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #articleInfo {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Validation Page</h1>
+    <p>
+        <label for="articleUrl">Masukkan URL Artikel:</label>
+        <input id="articleUrl" type="text" placeholder="Contoh: https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889" />
+        <button id="fetchData">Tampilkan Data</button>
+    </p>
+    <div id="articleInfo">
+        <h2>Informasi Artikel</h2>
+        <p><strong>Judul:</strong> <span id="title"></span></p>
+        <p><strong>Penulis:</strong> <span id="authors"></span></p>
+        <p><strong>DOI:</strong> <span id="doi"></span></p>
+        <p><strong>Tanggal Terbit:</strong> <span id="datePublished"></span></p>
+    </div>
+    <script>
+        document.getElementById('fetchData').addEventListener('click', () => {
+            const articleUrl = document.getElementById('articleUrl').value;
+            const match = articleUrl.match(/\/article\/view\/(\d+)/);
+            if (!match) {
+                alert('URL tidak valid!');
+                return;
+            }
+            const articleId = match[1];
+            const apiUrl = `https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('title').textContent = data.title.id_ID || 'Tidak tersedia';
+                    document.getElementById('authors').textContent = data.authorString || 'Tidak tersedia';
+                    document.getElementById('doi').textContent = data.issue.doi || 'Tidak tersedia';
+                    document.getElementById('datePublished').textContent = data.datePublished || 'Tidak tersedia';
+                    document.getElementById('articleInfo').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal mengambil data. Periksa URL atau coba lagi nanti.');
+                });
+        });
+    </script>
+</body>
+</html>
