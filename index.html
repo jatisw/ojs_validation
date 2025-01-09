@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validation</title>
+    <title>Validation Page</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         #articleInfo { display: none; margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; background-color: #f9f9f9; }
@@ -22,6 +22,7 @@
         <h2>Informasi Artikel</h2>
         <p><strong>Judul:</strong> <span id="title"></span></p>
         <p><strong>Penulis:</strong> <span id="authors"></span></p>
+        <p><strong>DOI:</strong> <span id="doi"></span></p>
         <p><strong>Tanggal Terbit:</strong> <span id="datePublished"></span></p>
     </div>
     <script>
@@ -37,10 +38,7 @@
             }
 
             const articleId = match[1];
-            #const apiUrl = `https://cors-anywhere.herokuapp.com/https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
-            const apiUrl = `https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889`;
-            #const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889')}`;
-
+            const apiUrl = `https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
             
             document.getElementById('loader').style.display = 'block';
             document.getElementById('articleInfo').style.display = 'none';
@@ -52,6 +50,7 @@
 
                 document.getElementById('title').textContent = safeGet('title.id_ID');
                 document.getElementById('authors').textContent = safeGet('authorString');
+                document.getElementById('doi').textContent = safeGet('issue.doi');
                 document.getElementById('datePublished').textContent = safeGet('datePublished');
 
                 document.getElementById('articleInfo').style.display = 'block';
