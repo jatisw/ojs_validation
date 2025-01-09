@@ -42,7 +42,8 @@
                 return;
             }
             const articleId = match[1];
-            const apiUrl = `https://cors-anywhere.herokuapp.com/https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
+            #const apiUrl = `https://cors-anywhere.herokuapp.com/https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
+            const apiUrl = `https://cors-anywhere.herokuapp.com/https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889`;
             
             fetch(apiUrl)
                 .then(response => response.json())
