@@ -8,11 +8,6 @@ $jsonData = file_get_contents($apiUrl);
 // Dekode JSON menjadi array
 $data = json_decode($jsonData, true);
 
-// Debugging: Cetak data JSON mentah
-echo "<pre>";
-print_r($data);
-echo "</pre>";
-
 // Pastikan data berhasil diambil
 if ($data) {
     // Validasi data
