@@ -49,7 +49,9 @@
     <script>
         async function fetchArticleData() {
             try {
-                const response = await fetch('https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889');
+                const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                const url = 'https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889';
+                const response = await fetch(corsProxy + url);
                 const jsonData = await response.json();
 
                 // Extract relevant data
