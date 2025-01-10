@@ -8,13 +8,18 @@ $jsonData = file_get_contents($apiUrl);
 // Dekode JSON menjadi array
 $data = json_decode($jsonData, true);
 
+// Debugging: Cetak data JSON mentah
+echo "<pre>";
+print_r($data);
+echo "</pre>";
+
 // Pastikan data berhasil diambil
 if ($data) {
-    // Ambil informasi yang diperlukan
-    $title = $data['title']['id_ID'];
-    $authors = $data['authorString'];
-    $datePublished = $data['datePublished'];
-    $articleUrl = $data['urlPublished'];
+    // Validasi data
+    $title = isset($data['title']['id_ID']) && $data['title']['id_ID'] !== '' ? $data['title']['id_ID'] : "No title available";
+    $authors = isset($data['authorString']) && $data['authorString'] !== '' ? $data['authorString'] : "No authors available";
+    $datePublished = isset($data['datePublished']) && $data['datePublished'] !== '' ? $data['datePublished'] : "No published date available";
+    $articleUrl = isset($data['urlPublished']) && $data['urlPublished'] !== '' ? $data['urlPublished'] : "#";
 
     // Tampilkan dalam format HTML
     echo "<!DOCTYPE html>
@@ -57,6 +62,7 @@ if ($data) {
     </body>
     </html>";
 } else {
+    // Jika data gagal diambil, tampilkan pesan kesalahan
     echo "Failed to fetch data from API.";
 }
 ?>
