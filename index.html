@@ -1,20 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Information</title>
+    <title>Validation Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #articleInfo {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #loader {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Article Information from API</h1>
-    
-    <p>Data will be fetched from the API and displayed in the iframe below:</p>
-    
-    <iframe id="api-iframe" 
-            src="https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889" 
-            width="100%" height="600px">
-        Your browser does not support iframes.
-    </iframe>
+    <h1>Validation Page</h1>
+    <p>
+        <label for="articleUrl">Masukkan URL Artikel:</label>
+        <input id="articleUrl" type="text" placeholder="https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889" />
+        <button id="fetchData">Tampilkan Data</button>
+    </p>
+    <div id="loader">Memuat data...</div>
+    <div id="articleInfo">
+        <h2>Informasi Artikel</h2>
+        <p><strong>Judul:</strong> <span id="title"></span></p>
+        <p><strong>Penulis:</strong> <span id="authors"></span></p>
+        <p><strong>DOI:</strong> <span id="doi"></span></p>
+        <p><strong>Tanggal Terbit:</strong> <span id="datePublished"></span></p>
+    </div>
+    <script>
+        document.getElementById('fetchData').addEventListener('click', () => {
+            const articleUrl = document.getElementById('articleUrl').value;
 
+            // Validasi URL
+            const match = articleUrl.match(/^https:\/\/www\.unisbank\.ac\.id\/ojs\/index\.php\/fti1\/article\/view\/(\d+)$/);
+            if (!match) {
+                alert('URL tidak valid! Harus berupa link artikel yang sesuai dengan format OJS.');
+                return;
+            }
+
+            const articleId = match[1];
+            #const apiUrl = `https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
+            const apiUrl = `https://cors-anywhere.herokuapp.com/https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/${articleId}`;
+            
+            // Aktifkan loader
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('articleInfo').style.display = 'none';
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal mengakses API.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Fungsi untuk mendapatkan nilai dengan fallback
+                    const safeGet = (path, fallback = 'Tidak tersedia') => {
+                        return path.split('.').reduce((obj, key) => (obj && obj[key] !== undefined ? obj[key] : fallback), data);
+                    };
+
+                    // Isi data ke elemen HTML
+                    document.getElementById('title').textContent = safeGet('title.id_ID');
+                    document.getElementById('authors').textContent = safeGet('authorString');
+                    document.getElementById('doi').textContent = safeGet('issue.doi');
+                    document.getElementById('datePublished').textContent = safeGet('datePublished');
+
+                    // Tampilkan data dan sembunyikan loader
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('articleInfo').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loader').style.display = 'none';
+                    alert('Gagal mengambil data. Pastikan Anda telah mengaktifkan CORS Anywhere atau coba lagi nanti.');
+                });
+        });
+    </script>
 </body>
 </html>
