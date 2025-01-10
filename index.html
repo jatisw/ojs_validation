@@ -4,26 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article Information (JSONP)</title>
+</head>
+<body>
+    <h1>Article Information (JSONP)</h1>
+    <div id="article-info">
+        Loading...
+    </div>
+
     <script>
+        // Fungsi untuk mengambil data menggunakan JSONP
         function fetchArticleData(callback) {
-            // URL API dengan parameter callback untuk JSONP
             const apiUrl = "https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889?callback=" + callback;
 
             // Buat elemen script
             const script = document.createElement('script');
             script.src = apiUrl;
+
+            // Tambahkan elemen script ke dalam body
             document.body.appendChild(script);
         }
 
-        // Fungsi callback untuk menerima data JSONP
+        // Callback JSONP
         function handleResponse(data) {
-            // Ambil data yang diperlukan
             const title = data.title?.id_ID || 'No title available';
             const authors = data.authorString || 'No authors available';
             const datePublished = data.datePublished || 'No published date available';
             const articleLink = data.urlPublished || '#';
 
-            // Tampilkan data di dalam elemen HTML
             document.getElementById('article-info').innerHTML = `
                 <p><strong>Title:</strong> ${title}</p>
                 <p><strong>Authors:</strong> ${authors}</p>
@@ -32,14 +39,10 @@
             `;
         }
 
-        // Panggil fungsi fetch dengan nama callback
-        fetchArticleData("handleResponse");
+        // Tunggu sampai DOM selesai dimuat
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchArticleData("handleResponse");
+        });
     </script>
-</head>
-<body>
-    <h1>Article Information (JSONP)</h1>
-    <div id="article-info">
-        Loading...
-    </div>
 </body>
 </html>
