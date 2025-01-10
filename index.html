@@ -1,96 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Viewer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            font-size: 24px;
-            color: #333;
-        }
-        .field {
-            margin-bottom: 15px;
-        }
-        .label {
-            font-weight: bold;
-            color: #555;
-        }
-        a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Article Information</h1>
-        <div id="content">
-            <p>Loading article information...</p>
+<?php
+// URL API
+$apiUrl = "https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889";
+
+// Ambil data JSON dari API
+$jsonData = file_get_contents($apiUrl);
+
+// Dekode JSON menjadi array
+$data = json_decode($jsonData, true);
+
+// Pastikan data berhasil diambil
+if ($data) {
+    // Ambil informasi yang diperlukan
+    $title = $data['title']['id_ID'];
+    $authors = $data['authorString'];
+    $datePublished = $data['datePublished'];
+    $articleUrl = $data['urlPublished'];
+
+    // Tampilkan dalam format HTML
+    echo "<!DOCTYPE html>
+    <html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>Article Details</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 20px;
+            }
+            .article {
+                border: 1px solid #ddd;
+                padding: 15px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .article h2 {
+                color: #333;
+            }
+            .article a {
+                color: #007BFF;
+                text-decoration: none;
+            }
+            .article a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='article'>
+            <h2>$title</h2>
+            <p><strong>Authors:</strong> $authors</p>
+            <p><strong>Published Date:</strong> $datePublished</p>
+            <p><a href='$articleUrl' target='_blank'>Read Full Article</a></p>
         </div>
-    </div>
-
-    <script>
-async function scrapeArticle() {
-    try {
-        const response = await fetch('https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889', { mode: 'no-cors' });
-        const html = await response.text();
-
-        // Buat DOM parser
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        // Ambil data yang diinginkan
-        const title = doc.querySelector('h1.article-title')?.textContent || 'No title available';
-        const authors = doc.querySelector('.authors')?.textContent || 'No authors available';
-        const publishedDate = doc.querySelector('.published-date')?.textContent || 'No published date available';
-        const link = 'https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889';
-
-        // Tampilkan hasil
-        const content = `
-            <div class="field">
-                <div class="label">Title:</div>
-                <div>${title}</div>
-            </div>
-            <div class="field">
-                <div class="label">Authors:</div>
-                <div>${authors}</div>
-            </div>
-            <div class="field">
-                <div class="label">Published Date:</div>
-                <div>${publishedDate}</div>
-            </div>
-            <div class="field">
-                <div class="label">Article Link:</div>
-                <div><a href="${link}" target="_blank">Read Article</a></div>
-            </div>
-        `;
-
-        document.getElementById('content').innerHTML = content;
-    } catch (error) {
-        console.error('Error scraping article:', error);
-        document.getElementById('content').innerHTML = '<p>Error loading article information.</p>';
-    }
+    </body>
+    </html>";
+} else {
+    echo "Failed to fetch data from API.";
 }
-
-// Panggil fungsi scraping
-scrapeArticle();
-    </script>
-</body>
-</html>
+?>
