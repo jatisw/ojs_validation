@@ -3,68 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Details</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
+    <title>Article Information (JSONP)</title>
+    <script>
+        function fetchArticleData(callback) {
+            // URL API dengan parameter callback untuk JSONP
+            const apiUrl = "https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889?callback=" + callback;
+
+            // Buat elemen script
+            const script = document.createElement('script');
+            script.src = apiUrl;
+            document.body.appendChild(script);
         }
-        .article {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        // Fungsi callback untuk menerima data JSONP
+        function handleResponse(data) {
+            // Ambil data yang diperlukan
+            const title = data.title?.id_ID || 'No title available';
+            const authors = data.authorString || 'No authors available';
+            const datePublished = data.datePublished || 'No published date available';
+            const articleLink = data.urlPublished || '#';
+
+            // Tampilkan data di dalam elemen HTML
+            document.getElementById('article-info').innerHTML = `
+                <p><strong>Title:</strong> ${title}</p>
+                <p><strong>Authors:</strong> ${authors}</p>
+                <p><strong>Published Date:</strong> ${datePublished}</p>
+                <p><a href="${articleLink}" target="_blank">Read Full Article</a></p>
+            `;
         }
-        .article h2 {
-            color: #333;
-        }
-        .article a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        .article a:hover {
-            text-decoration: underline;
-        }
-    </style>
+
+        // Panggil fungsi fetch dengan nama callback
+        fetchArticleData("handleResponse");
+    </script>
 </head>
 <body>
-    <div class="article" id="article">
-        <h2>Loading...</h2>
-        <p><strong>Authors:</strong> </p>
-        <p><strong>Published Date:</strong> </p>
-        <p><a href="#" target="_blank">Read Full Article</a></p>
+    <h1>Article Information (JSONP)</h1>
+    <div id="article-info">
+        Loading...
     </div>
-
-    <script>
-        // API URL
-        const apiUrl = "https://www.unisbank.ac.id/ojs/index.php/fti1/api/v1/submissions/9889";
-
-        // Ambil elemen HTML
-        const articleDiv = document.getElementById('article');
-
-        // Fetch data dari API
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                // Ambil data yang diperlukan
-                const title = data.title.id_ID || "No title available";
-                const authors = data.authorString || "No authors available";
-                const datePublished = data.datePublished || "No published date available";
-                const articleUrl = data.urlPublished || "#";
-
-                // Update elemen HTML
-                articleDiv.innerHTML = `
-                    <h2>${title}</h2>
-                    <p><strong>Authors:</strong> ${authors}</p>
-                    <p><strong>Published Date:</strong> ${datePublished}</p>
-                    <p><a href="${articleUrl}" target="_blank">Read Full Article</a></p>
-                `;
-            })
-            .catch(error => {
-                articleDiv.innerHTML = `<p>Failed to fetch data. Please try again later.</p>`;
-                console.error('Error fetching data:', error);
-            });
-    </script>
 </body>
 </html>
