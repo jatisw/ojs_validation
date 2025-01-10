@@ -41,55 +41,22 @@
 <body>
     <div class="container">
         <h1>Article Information</h1>
-        <div id="content">
-            <p>Loading article information...</p>
+        <div class="field">
+            <div class="label">Title:</div>
+            <div>Prioritizing Pregnant Mother at Risk of Stunting: An Analytic Network Process Approach</div>
+        </div>
+        <div class="field">
+            <div class="label">Authors:</div>
+            <div>Taufiq Dwi Cahyono, Wiwien Hadikurniawati</div>
+        </div>
+        <div class="field">
+            <div class="label">Published Date:</div>
+            <div>2024-07-01</div>
+        </div>
+        <div class="field">
+            <div class="label">Article Link:</div>
+            <div><a href="https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889" target="_blank">Read Article</a></div>
         </div>
     </div>
-
-    <script>
-        async function fetchArticleData() {
-            try {
-                const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                const url = 'https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889';
-                const response = await fetch(corsProxy + url);
-                const jsonData = await response.json();
-
-                // Extract relevant data
-                const title = jsonData.title.id_ID;
-                const authors = jsonData.authorString;
-                const publishedDate = jsonData.datePublished;
-                const articleLink = jsonData.urlPublished;
-
-                // Generate HTML content
-                const content = `
-                    <div class="field">
-                        <div class="label">Title:</div>
-                        <div>${title}</div>
-                    </div>
-                    <div class="field">
-                        <div class="label">Authors:</div>
-                        <div>${authors}</div>
-                    </div>
-                    <div class="field">
-                        <div class="label">Published Date:</div>
-                        <div>${publishedDate}</div>
-                    </div>
-                    <div class="field">
-                        <div class="label">Article Link:</div>
-                        <div><a href="${articleLink}" target="_blank">Read Article</a></div>
-                    </div>
-                `;
-
-                // Display the content
-                document.getElementById('content').innerHTML = content;
-            } catch (error) {
-                document.getElementById('content').innerHTML = '<p>Error loading article information. Please try again later.</p>';
-                console.error('Error fetching article data:', error);
-            }
-        }
-
-        // Fetch and display article data on page load
-        fetchArticleData();
-    </script>
 </body>
 </html>
