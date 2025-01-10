@@ -47,46 +47,49 @@
     </div>
 
     <script>
-        async function fetchArticleData() {
-            try {
-                //const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                const url = 'https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9422';
-                const response = await fetch(url);
-                const jsonData = await response.json();
+async function fetchArticleData() {
+    try {
+        const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+        const url = 'https://www.unisbank.ac.id/ojs/index.php/fti1/article/view/9889';
+        const response = await fetch(corsProxy + url);
 
-                // Extract relevant data
-                const title = jsonData.title.id_ID;
-                const authors = jsonData.authorString;
-                const publishedDate = jsonData.datePublished;
-                const articleLink = jsonData.urlPublished;
+        // Log the raw response
+        const textResponse = await response.text();
+        console.log('Raw response:', textResponse);
 
-                // Generate HTML content
-                const content = `
-                    <div class="field">
-                        <div class="label">Title:</div>
-                        <div>${title}</div>
-                    </div>
-                    <div class="field">
-                        <div class="label">Authors:</div>
-                        <div>${authors}</div>
-                    </div>
-                    <div class="field">
-                        <div class="label">Published Date:</div>
-                        <div>${publishedDate}</div>
-                    </div>
-                    <div class="field">
-                        <div class="label">Article Link:</div>
-                        <div><a href="${articleLink}" target="_blank">Read Article</a></div>
-                    </div>
-                `;
+        const jsonData = JSON.parse(textResponse);
 
-                // Display the content
-                document.getElementById('content').innerHTML = content;
-            } catch (error) {
-                document.getElementById('content').innerHTML = '<p>Error loading article information. Please try again later.</p>';
-                console.error('Error fetching article data:', error);
-            }
-        }
+        const title = jsonData.title?.id_ID || "No Title Available";
+        const authors = jsonData.authorString || "No Authors Available";
+        const publishedDate = jsonData.datePublished || "No Date Available";
+        const articleLink = jsonData.urlPublished || "#";
+
+        const content = `
+            <div class="field">
+                <div class="label">Title:</div>
+                <div>${title}</div>
+            </div>
+            <div class="field">
+                <div class="label">Authors:</div>
+                <div>${authors}</div>
+            </div>
+            <div class="field">
+                <div class="label">Published Date:</div>
+                <div>${publishedDate}</div>
+            </div>
+            <div class="field">
+                <div class="label">Article Link:</div>
+                <div><a href="${articleLink}" target="_blank">Read Article</a></div>
+            </div>
+        `;
+
+        document.getElementById('content').innerHTML = content;
+    } catch (error) {
+        document.getElementById('content').innerHTML = '<p>Error loading article information. Please try again later.</p>';
+        console.error('Error fetching article data:', error);
+    }
+}
+
 
         // Fetch and display article data on page load
         fetchArticleData();
